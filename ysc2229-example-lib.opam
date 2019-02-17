@@ -1,0 +1,29 @@
+opam-version: "2.0"
+version: "1.0"
+maintainer: "ilya.sergey@yale-nus.edu.sc"
+homepage: "https://ilyasergey.net/YSC2229/"
+dev-repo: "git://github.com:ilyasergey/ysc2229-examples.git"
+bug-reports: "https://github.com/ilyasergey/ysc2229-examples/issues"
+license: "MIT"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+
+install: [ make ]
+depends: [
+
+ ]
+
+description: "Examples for the Yale-NUS College module on Introductory
+Data Structures and Algorithms (YSC2229)"
+
+tags: [
+  "category:Computer Science/Education/Basic Algorithms and Data Structures"
+  "keyword:data structures"
+  "keyword:algorithms"
+]
+
+authors: [
+  "Ilya Sergey <ilya.sergey@yale-nus.edu.sg>"
+]
+

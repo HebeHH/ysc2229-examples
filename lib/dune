@@ -1,0 +1,6 @@
+(library
+ (name ysc2229_example_lib)
+ (public_name ysc2229-example-lib)
+  (wrapped false)
+  (libraries ysc2229-part-one)
+  (synopsis "Exercise libraries of YSC2229"))

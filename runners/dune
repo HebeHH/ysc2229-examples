@@ -1,0 +1,4 @@
+(executables
+ (names compare_sorts)
+  (public_names compare_sorts)
+  (libraries ysc2229-part-one ysc2229-example-lib))
