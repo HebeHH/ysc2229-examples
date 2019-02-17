@@ -31,6 +31,10 @@ This project consist of the following folders:
   comments with explanations of their ket components and intended
   functionality.
 
+## Running REPL for the project
+
+TODO: explain how utop works
+
 ## Essential configuration files
 
 In order to have the smooth experience when working with the project,
