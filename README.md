@@ -2,9 +2,12 @@
 
 Various examples of using YSC2229 libraries for writing your own
 programs. The libraries are delivered as a standalone package
-available for building and using from
+available for building and can be compiled from the privater
+repository
 
 https://github.com/ilyasergey/ysc2229-part-one
+
+The repository also contains all instructions.
 
 Please, consult the lecture notes for the theoretical material.:
 
