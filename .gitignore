@@ -45,3 +45,4 @@ cv/*.out
 
 .DS_Store
 
+*.txt

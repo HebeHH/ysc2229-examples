@@ -32,9 +32,19 @@ This project consist of the following folders:
 
 ## Building the project
 
+### Dependencies
+
 As this project depends on `ysc2229-part-one`, make sure the latter
 one is installed via `opam`, as described in the `README.md` of the
 [corresponding project](https://github.com/ilyasergey/ysc2229-part-one).
+
+The dependencies also contain a third-party packege `core`, which can
+be installed as follows:
+
+```
+opam install core
+```
+
 
 The project can be then built by typing
 
@@ -156,6 +166,25 @@ dependencies properly.
 You can then evaluate the buffers from `runners` using usual shortcuts
 (`Ctrl-B`), using the libraries as in the `utop` examples above.
 
+## Playing with examples:
+
+* `runners/compare_sorts.ml` - a simple file that generates two arrays
+  and compares two sorting algorithms on them. To evaluate, after
+  building the project run
+  ```
+  bin/compare_sorts
+  ```
+
+* `runners/read_input.ml` - an example that reads user input from a
+  command-line argument. For instance, if you run
+  ```
+  bin/read_input data.txt
+  ```
+  it will create the file `data.txt` in the root of the project, with
+  a message `Hello!` in it. 
+
+For more interesting things to engineer in OCaml, check Google, or the
+book [Real World OCaml](https://realworldocaml.org/).
 
 ## Essential configuration files
 

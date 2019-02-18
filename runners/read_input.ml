@@ -23,29 +23,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *)
 
-open Week_03
-open Week_05
-open SortUtil
-open RunnerUtil
+(* Reading/writing to a file *)
+(*  
+How to use:
 
-module AP = Week_05.ArrayPrinter(KV) 
+After building the project run
 
-(* TODO: 
-
-1. parse command-line arguments 
-2. Read from file
-3. Write to file
 *)
 
-let time_two_sorts len = 
-  let arr = generate_key_value_array len in
-  let arr' = copy_array arr 0 len in
-  let t = time_string "Simple Merge Sort  " merge_sort arr in
-  let t' = time_string "Enhanced Merge Sort" fast_merge_sort arr' in
-  Printf.printf "%s%s" t t'
+open Printf
 
-(* Simple executable *)
-let () =   
-  let len = 100000 in
-  time_two_sorts len
-     
+let message = "Hello!"
+  
+let () =
+  if Array.length (Sys.argv) < 2 
+  then raise @@ Failure "No file name provided!";
+
+  let file = Sys.argv.(1) in   (* Read file arguments *)
+
+  (* Write message to file *)
+  let oc = open_out file in    (* create or truncate file, return channel *)
+  fprintf oc "%s\n" message;   (* write something *)   
+  close_out oc;                (* flush and close the channel *)
+  
+  (* Read file and display the first line *)
+  let ic = open_in file in
+  try 
+    let line = input_line ic in  (* read line from in_channel and discard \n *)
+    print_endline line;          (* write the result to stdout *)
+    flush stdout;                (* write on the underlying device now *)
+    close_in ic                  (* close the input channel *) 
+  
+  with e ->                      (* some unexpected exception occurs *)
+    close_in_noerr ic;           (* emergency closing *)
+    raise e                      (* exit with error: files are closed but
+                                    channels are not flushed *)
