@@ -1,4 +1,5 @@
 (executables
  (names compare_sorts)
   (public_names compare_sorts)
+  (modules compare_sorts RunnerUtil)
   (libraries ysc2229-part-one ysc2229-example-lib))

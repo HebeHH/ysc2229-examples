@@ -26,6 +26,7 @@ SOFTWARE.
 open Week_03
 open Week_05
 open SortUtil
+open RunnerUtil
 
 module AP = Week_05.ArrayPrinter(KV) 
 

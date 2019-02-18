@@ -61,3 +61,4 @@ let time_string msg f x =
   Printf.sprintf "Execution elapsed time of %s: %f sec\n"
     msg (Sys.time () -. t)
 
+let useless_message = "Hello"
