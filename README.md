@@ -89,22 +89,7 @@ The easiest and recommended way of installing utop is via opam:
 $ opam install utop
 ```
 
-To use utop in Emacs/Aquamacs, add this to your `~/.emacs`:
-
-```
-;; Add the opam lisp dir to the emacs load path
-(add-to-list
- 'load-path
- (replace-regexp-in-string
-  "\n" "/share/emacs/site-lisp"
-  (shell-command-to-string "opam config var prefix")))
-
-;; Automatically load utop.el
-(autoload 'utop "utop" "Toplevel for OCaml" t)
-
-;; Use the opam installed utop
-(setq utop-command "opam config exec -- utop -emacs")
-```
+To use utop in Emacs/Aquamacs, follow the instructions [here](https://github.com/ocaml-community/utop#main-setup).
 
 ### Running utop from the project root
 
