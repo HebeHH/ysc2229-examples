@@ -116,6 +116,20 @@ utop # SortUtil.useless_message;;
 - : string = "Hello"
 ```
 
+You can also observe the contents of the modules from the
+dependencies:
+
+```
+utop # #show_module Week_01;;
+module Week_01 :
+  sig
+    val find_min : 'a list -> 'a option
+    val is_min : 'a list -> 'a -> bool
+    val get_exn : 'a option -> 'a
+    ...
+  end
+```
+
 To exit the REPL, type
 
 ```
