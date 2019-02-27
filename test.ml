@@ -26,29 +26,50 @@ let print_int_array arr =
   let len = Array.length arr in
   print_int_sub_array 0 (len) arr
 
+let equivalent ls1 ls2 =
+  let contains_all xs1 xs2 =
+    List.for_all (fun e -> List.exists (fun x -> x = e) xs2) xs1
+  in
+  (List.length ls1 == List.length ls2) &&
+    (contains_all ls1 ls2) &&
+      (contains_all ls2 ls1)
+  ;;
 
 
 (* Exercise 7.2 1: *)
 (* Very space intensive - copies arrays way too much - should be a way to not do that*)
-  
+
+let perm_unit_test (cand: 'a array -> 'a array list) =
+  cand [||] = [[||]]  &&
+    equivalent (cand [|1; 2; 3|])
+      [[|1; 2; 3|]; [|1; 3; 2|]; [|2; 1; 3|]; [|2; 3; 1|]; [|3; 1; 2|]; [|3; 2; 1|]]  &&
+      equivalent (cand [|1;2;3;4|]) (cand [|3;4;2;1|])
+;;
+
+
 let permutations a =
   let len = Array.length(a) in
   let rec perms arr i =
-    if i == len then [Array.make len 0]
+    if i = len then [Array.copy a]
     else
       let ls = ref [] in
       for j = i to len - 1 do
-        Printf.printf "\ni = %d j = %d\n" i j;
         swap arr i j;
-        let sub_perms = perms (Array.copy arr) (i + 1) in
-        List.iter (fun sp -> print_int_array sp) sub_perms;
+        let sub_perms = perms arr (i + 1) in
         List.iter (fun sp -> sp.(i) <- arr.(i)) sub_perms;
-        List.iter (fun sp -> print_int_array sp) sub_perms;
+        swap arr i j;
         ls := !ls @ sub_perms
       done;
       !ls
   in perms (Array.copy a) 0;;
 
+(* 
+Passes the unit test; also passes the polymorphic unit test, done separately bc ocaml
+can be a bit too typesafe at times.
+*)
+perm_unit_test permutations;;
+equivalent (permutations [|(1,'a');(2,'b');(3,'c');(4,'d')|])
+  (permutations [|(1,'a');(4,'d');(2,'b');(3,'c')|]);;
 
 
 
