@@ -145,3 +145,53 @@ perm_test perm [|1;2;3|];;
 perm_test perm [|1;2;3;4|];;
 perm_test perm [|1;2;3;4;5|];;
 perm_test perm [|1;2;3;4;5;6|];;
+
+
+
+
+
+
+(* Exercise 7.2 3: *)
+
+module type Comparable = sig
+  type t
+  val comp : t -> t -> int
+end
+
+                       
+module StupidSorting (Comp: Comparable) = struct
+  include Comp
+
+ let rec sorted ls =
+    match ls with
+    | [] -> true
+    | h :: t ->
+       List.for_all (fun e -> comp e h >= 0) t && sorted t
+
+ let is_sorted arr =
+   sorted (Array.to_list arr)
+
+ let silly_sort arr =
+   let all_perms = permutations arr in
+   let rec find_sorted perms =
+     match perms with
+     | [] -> raise (Failure "Something went wrong - maybe check your comparison function?")
+     | h :: t -> ( match is_sorted(h) with
+                   | true -> h
+                   | false -> find_sorted t
+                 )
+   in find_sorted all_perms
+    
+end;;          
+  
+module Desc = struct
+  type t = int
+  let comp = 
+    fun x y -> if x < y then -1
+            else if x = y then 0
+            else 1
+end;;
+
+module StupidIntDescSort = StupidSorting(Desc);;
+
+StupidIntDescSort.silly_sort [|4;2;7;1;5|];;
