@@ -10,6 +10,50 @@ let fact n =
     else helper (n-1) (acc*n) in
   helper n 1;;
 
+let print_int_sub_array l u arr =
+  assert (l <= u);
+  assert (u <= Array.length arr);
+  Printf.printf "[| ";
+  for i = l to u - 1 do
+    Printf.printf "%d" arr.(i);
+    if i < u - 1
+    then Printf.printf "; "
+    else ()
+  done;
+  Printf.printf " |] "
+
+let print_int_array arr =
+  let len = Array.length arr in
+  print_int_sub_array 0 (len) arr
+
+
+
+(* Exercise 7.2 1: *)
+(* Very space intensive - copies arrays way too much - should be a way to not do that*)
+  
+let permutations a =
+  let len = Array.length(a) in
+  let rec perms arr i =
+    if i == len then [Array.make len 0]
+    else
+      let ls = ref [] in
+      for j = i to len - 1 do
+        Printf.printf "\ni = %d j = %d\n" i j;
+        swap arr i j;
+        let sub_perms = perms (Array.copy arr) (i + 1) in
+        List.iter (fun sp -> print_int_array sp) sub_perms;
+        List.iter (fun sp -> sp.(i) <- arr.(i)) sub_perms;
+        List.iter (fun sp -> print_int_array sp) sub_perms;
+        ls := !ls @ sub_perms
+      done;
+      !ls
+  in perms (Array.copy a) 0;;
+
+
+
+
+(* Exercise 7.2 2: *)
+
 let perm a m =
   let n = Array.length(a) in
   if m >= fact(n) then a
@@ -39,6 +83,7 @@ let perm a m =
       helper a 0 m
     end;;
 
+(* Test: *)
 perm [|1|] 0;;
 perm [|1|] 1;;
 perm [|1|] 2;;
