@@ -211,14 +211,17 @@ module OurAllocator = struct
     in
     add 0;;
      
-  let assign_ptr hp pointer offset value =
+  let rec assign_ptr hp pointer offset value =
     if pointer.index + offset >= mem_size then raise Out_of_memory
     else
       match hp.master.(pointer.index + offset).of_kind with
       | Allocated|Null -> let target_index = assign_val hp.pointers hp.pointers_free value in
                           hp.master.(pointer.index + offset) <- {of_kind = Pointer;
                                                                  index = target_index}
-      | _ -> raise Out_of_memory;;
+      | _ -> Printf.printf "Overwriting prior value\n";
+             free hp pointer offset;
+             assign_ptr hp pointer offset value
+  ;;
   
   let assign_int hp pointer offset value =
     if pointer.index + offset >= mem_size then raise Out_of_memory
@@ -267,18 +270,43 @@ module DoubleLinkedList(A: Allocator) =
       assign_ptr heap segment 3 z;
       segment
        
-    let prev heap (n : dll_node) = () (* Implement me! *)
-    let next heap (n : dll_node) = () (* Implement me! *)
-    let int_value heap (n : dll_node) = () (* Implement me! *)
-    let string_value heap (n : dll_node) = () (* Implement me! *)
-          
-    let insert_after heap (n1 : dll_node) (n2 : dll_node) = 
-      () (* Implement me! *)
-      
-    (* Prints the double-linked list starting from the node *)
-    let print_from_node heap n = () (* Implement me! *)
+    let prev heap (n : dll_node) =
+      deref_as_ptr heap n 2
+    let next heap (n : dll_node) =
+      deref_as_ptr heap n 3
+    let int_value heap (n : dll_node) =
+      deref_as_int heap n 0
+    let string_value heap (n : dll_node) =
+      deref_as_string heap n 1
 
-    let remove heap n = () (* Implement me! *)
+    let rem heap n =
+      if not (is_null heap (next heap n)) then
+        assign_ptr heap (next heap n) 2 (prev heap n);
+      if not (is_null heap (prev heap n)) then
+        assign_ptr heap (prev heap n) 3 (next heap n);;
+      
+          
+    let insert_after heap (n1 : dll_node) (n2 : dll_node) =
+      rem heap n2;
+      assign_ptr heap n2 3 (next heap n1);
+      assign_ptr heap n1 3 n2;
+      assign_ptr heap n2 2 n1;
+      ()
+      
+    (* Prints the double-linked list starting from the node *)    
+    let rec print_from_node heap n =
+      Printf.printf " (%s, %d) " (string_value heap n) (int_value heap n);
+      if not (is_null heap (next heap n)) then
+        (Printf.printf "<->";
+         print_from_node heap (next heap n) )
+    ;;
+    
+    let remove heap n =
+      rem heap n;
+      for i = 0 to 3 do
+        free heap n i
+      done;;
+      
   end 
 
 (*
