@@ -37,7 +37,6 @@ let equivalent ls1 ls2 =
 
 
 (* Exercise 7.2 1: *)
-(* Very space intensive - copies arrays way too much - should be a way to not do that*)
 
 let perm_unit_test (cand: 'a array -> 'a array list) =
   cand [||] = [[||]]  &&
@@ -151,7 +150,7 @@ perm_test perm [|1;2;3;4;5;6|];;
 
 
 
-(* Exercise 7.2 3: *)
+(* Exercise 7.2 3&4: *)
 
 module type Comparable = sig
   type t
@@ -171,6 +170,41 @@ module StupidSorting (Comp: Comparable) = struct
  let is_sorted arr =
    sorted (Array.to_list arr)
 
+ let sort_unit_test cand =
+   (is_sorted (cand [|2;1;0|])) &&
+   (is_sorted (cand [|0;1;2|])) &&
+   (is_sorted (cand [|5;3;7|])) &&
+   (is_sorted (cand [|42;42|]))
+ 
+ let remove arr index =
+   let len= Array.length arr in
+   let res = Array.make (len-1) arr.(0) in
+   for i=0 to index-1 do
+     res.(i) <- arr.(i)
+   done;
+   for i=index to (len-2) do
+     res.(i) <- arr.(i+1)
+   done;
+   res;;
+ 
+
+ let create_list arr =
+   let len= Array.length arr in
+   let final_arr = copy arr in
+   let help = ref (copy arr) in
+   let le = ref len in
+   let num = ref 0 in
+   for i=0 to len-1 do
+     (if !le = 1
+      then num := 0
+      else num := Random.int (fact(!le)-1));
+     let per = perm !help !num in
+     final_arr.(i) <- per.(0);
+     help := remove per 0;
+     le := !le - 1;
+   done;
+   final_arr;;
+
  let silly_sort arr =
    let all_perms = permutations arr in
    let rec find_sorted perms =
@@ -181,6 +215,13 @@ module StupidSorting (Comp: Comparable) = struct
                    | false -> find_sorted t
                  )
    in find_sorted all_perms
+    
+ let super_silly_sort arr =
+   let final_arr = ref (copy arr) in
+   while (not (is_sorted(!final_arr))) do
+     final_arr := create_list arr
+   done;
+   !final_arr;;
     
 end;;          
   
@@ -193,58 +234,10 @@ module Desc = struct
 end;;
 
 module StupidIntDescSort = StupidSorting(Desc);;
+open StupidIntDescSort;;
 
-StupidIntDescSort.silly_sort [|4;2;7;1;5|];;
-
-
-(* Exercise 7.2 4: (Bonus) *)
-let is_sorted arr =
-  let comp = 
-    fun x y -> if x < y then -1
-            else if x = y then 0
-            else 1 in
-   let rec sorted ls =
-    match ls with
-    | [] -> true
-    | h :: t ->
-       List.for_all (fun e -> comp e h >= 0) t && sorted t in
-   sorted (Array.to_list arr);;
-let remove arr index =
-  let len= Array.length arr in
-  let res = Array.make (len-1) arr.(0) in
-  for i=0 to index-1 do
-    res.(i) <- arr.(i)
-  done;
-  for i=index to (len-2) do
-    res.(i) <- arr.(i+1)
-  done;
-  res;;
-
-let create_list arr =
-  let len= Array.length arr in
-  let final_arr = copy arr in
-  let help = ref (copy arr) in
-  let le = ref len in
-  let num = ref 0 in
-  for i=0 to len-1 do
-    (if !le = 1
-    then num := 0
-    else num := Random.int (fact(!le)-1));
-    let per = perm !help !num in
-    final_arr.(i) <- per.(0);
-    help := remove per 0;
-    le := !le - 1;
-  done;
-  final_arr;;
-
-let super_silly_sort arr =
-  let final_arr = ref (copy arr) in
-  while (not (is_sorted(!final_arr))) do
-    final_arr := create_list arr
-  done;
-  !final_arr;;
-
-super_silly_sort [|3;2;1;1;2|];;
+sort_unit_test silly_sort;;
+sort_unit_test super_silly_sort;;
 
 
 
