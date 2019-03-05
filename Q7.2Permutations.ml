@@ -199,6 +199,18 @@ StupidIntDescSort.silly_sort [|4;2;7;1;5|];;
 
 (* Exercise 7.2 4: (Bonus) *)
 
+let is_sorted arr =
+  let comp = 
+    fun x y -> if x < y then -1
+            else if x = y then 0
+            else 1 in
+   let rec sorted ls =
+    match ls with
+    | [] -> true
+    | h :: t ->
+       List.for_all (fun e -> comp e h >= 0) t && sorted t in
+   sorted (Array.to_list arr);;
+
 let remove arr index =
   let len= Array.length arr in
   let res = Array.make (len-1) arr.(0) in
