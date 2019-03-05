@@ -198,7 +198,6 @@ StupidIntDescSort.silly_sort [|4;2;7;1;5|];;
 
 
 (* Exercise 7.2 4: (Bonus) *)
-
 let is_sorted arr =
   let comp = 
     fun x y -> if x < y then -1
@@ -210,7 +209,6 @@ let is_sorted arr =
     | h :: t ->
        List.for_all (fun e -> comp e h >= 0) t && sorted t in
    sorted (Array.to_list arr);;
-
 let remove arr index =
   let len= Array.length arr in
   let res = Array.make (len-1) arr.(0) in
@@ -227,9 +225,12 @@ let create_list arr =
   let final_arr = copy arr in
   let help = ref (copy arr) in
   let le = ref len in
+  let num = ref 0 in
   for i=0 to len-1 do
-    let num = Random.int (fact(!le)-1) in
-    let per = perm !help num in
+    (if !le = 1
+    then num := 0
+    else num := Random.int (fact(!le)-1));
+    let per = perm !help !num in
     final_arr.(i) <- per.(0);
     help := remove per 0;
     le := !le - 1;
@@ -237,11 +238,13 @@ let create_list arr =
   final_arr;;
 
 let super_silly_sort arr =
-  let len = Array.length arr in
   let final_arr = ref (copy arr) in
-  while is_sorted(!final_arr) do
+  while (not (is_sorted(!final_arr))) do
     final_arr := create_list arr
   done;
   !final_arr;;
+
+super_silly_sort [|3;2;1;1;2|];;
+
 
 
