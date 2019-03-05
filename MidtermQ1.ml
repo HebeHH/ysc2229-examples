@@ -9,11 +9,12 @@ let smallest_missing_non_negative_integer arr =
 	while (arr.(!j)!= !j && arr.(!j)< (Array.length arr) && arr.(!j) != arr.(arr.(!j))) do
 		swap arr !j (arr.(!j));
 		j := !j + 1
-	done;
+  done
 
-	for i = 0 to (Array.length arr)  do
-		if (i != arr.(i)) then i	
-	done
+  for i = 0 to (Array.length arr)  do
+    if (i != arr.(i)) then i
+    else i+1  
+  done
 	
 
 
