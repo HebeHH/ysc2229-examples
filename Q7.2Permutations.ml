@@ -195,3 +195,41 @@ end;;
 module StupidIntDescSort = StupidSorting(Desc);;
 
 StupidIntDescSort.silly_sort [|4;2;7;1;5|];;
+
+
+(* Exercise 7.2 4: (Bonus) *)
+
+let remove arr index =
+  let len= Array.length arr in
+  let res = Array.make (len-1) arr.(0) in
+  for i=0 to index-1 do
+    res.(i) <- arr.(i)
+  done;
+  for i=index to (len-2) do
+    res.(i) <- arr.(i+1)
+  done;
+  res;;
+
+let create_list arr =
+  let len= Array.length arr in
+  let final_arr = copy arr in
+  let help = ref (copy arr) in
+  let le = ref len in
+  for i=0 to len-1 do
+    let num = Random.int (fact(!le)-1) in
+    let per = perm !help num in
+    final_arr.(i) <- per.(0);
+    help := remove per 0;
+    le := !le - 1;
+  done;
+  final_arr;;
+
+let super_silly_sort arr =
+  let len = Array.length arr in
+  let final_arr = ref (copy arr) in
+  while is_sorted(!final_arr) do
+    final_arr := create_list arr
+  done;
+  !final_arr;;
+
+
