@@ -142,6 +142,7 @@ module OurAllocator = struct
         | true -> change_status pos;
                   {of_kind = Master; index = pos}
         | false -> find_free (pos + 1)
+
     in
     find_free 0
   ;;
@@ -183,7 +184,7 @@ module OurAllocator = struct
       match pointer.of_kind with
       | Master -> deref (hp.master.(pointer.index + offset)) 0
       | Integer -> hp.integers.(pointer.index + offset)
-      | _ -> raise (Failure "Target is not a pointer")
+      | _ -> raise (Failure "Target is not a integer")
     in deref pointer offset
      
   (* Dereference as an integer, throw an exception if the target is not an string  *)   
@@ -192,7 +193,7 @@ module OurAllocator = struct
       match pointer.of_kind with
       | Master -> deref (hp.master.(pointer.index + offset)) 0
       | Str -> hp.strings.(pointer.index + offset)
-      | _ -> raise (Failure "Target is not a pointer")
+      | _ -> raise (Failure "Target is not a string")
     in deref pointer offset
 
   (* Assigning values to a pointer with an offset.                                 *)
@@ -288,9 +289,11 @@ module DoubleLinkedList(A: Allocator) =
           
     let insert_after heap (n1 : dll_node) (n2 : dll_node) =
       rem heap n2;
-      assign_ptr heap n2 3 (next heap n1);
+      let n3 = next heap n1 in
+      assign_ptr heap n2 3 n3;
       assign_ptr heap n1 3 n2;
       assign_ptr heap n2 2 n1;
+      assign_ptr heap n3 2 n2;
       ()
       
     (* Prints the double-linked list starting from the node *)    
@@ -305,7 +308,8 @@ module DoubleLinkedList(A: Allocator) =
       rem heap n;
       for i = 0 to 3 do
         free heap n i
-      done;;
+      done
+    ;;
       
   end 
 
@@ -338,12 +342,86 @@ module HeapDLLQueue(A: Allocator) = struct
     store : heap;
     head : dll_node;
     tail : dll_node;
-  }
+    }
 
-  let mk_queue _ = () (* Implement me! *)
-  let is_empty q = () (* Implement me! *) 
-  let enqueue q e = () (* Implement me! *) 
-  let dequeue q = () (* Implement me! *) 
-  let queue_to_list q = () (* Implement me! *) 
+  let mk_queue _ =
+    let s = make_heap () in
+    let h = mk_node s 0 "HEAD" in
+    let t = mk_node s 1 "TAIL" in
+    insert_after s t h;
+    print_from_node s h;
+    print_from_node s t;
+    { store = s;
+      head = h;
+      tail = t
+    }
+
+  let pfh q =
+    print_from_node q.store q.head
+
+  let pft q =
+    print_from_node q.store q.tail
+    
+  let is_empty q =
+    (next q.store q.tail) = q.head
+    
+  let enqueue q e =
+    let new_node = mk_node q.store (fst e) (snd e) in
+    insert_after q.store q.tail new_node;
+    print_from_node q.store q.head;
+    print_from_node q.store q.tail
+    
+  let dequeue q =
+    if is_empty q then None
+    else
+      let temp = prev q.store q.head in
+      let str_val = string_value q.store temp in
+      let int_val = int_value q.store temp in
+      remove q.store temp;
+      Some (int_val, str_val)
+      
+  let queue_to_list q =
+    let rec build_list node =
+      if is_null q.store (prev q.store node) then []
+      else
+        let str_val = string_value q.store node in
+        let int_val = int_value q.store node in
+        (int_val, str_val) :: (build_list (prev q.store node))
+    in
+    build_list (prev q.store q.head)
+        
         
 end
+
+
+(* 
+Testing: 
+*)
+module Queue = HeapDLLQueue(OurAllocator);;
+open Queue;;
+
+let q = mk_queue ();;
+
+let a =  (1, "a");;
+let b = ( 2, "b");;
+let c =  (3, "c");;
+let d = (4, "d");;
+let e = (5, "e");;
+
+enqueue q a;;
+queue_to_list q;;
+
+enqueue q b;;
+enqueue q c;;
+enqueue q d;;
+enqueue q e;;
+queue_to_list q;;
+
+dequeue q;;
+dequeue q;;
+dequeue q;;
+dequeue q;;
+dequeue q;;
+dequeue q;;
+queue_to_list q;;
+
