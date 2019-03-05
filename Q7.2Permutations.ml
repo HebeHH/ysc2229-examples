@@ -78,20 +78,26 @@ let perm a m =
   let n = Array.length(a) in
   if m >= fact(n) then a
   else begin
+      let len = ref 0 in
+      let b = ref 0 in
+      let continue = ref true in
+      let i = ref 0 in
       let rec helper list pos num =
-        let len = Array.length(list) - pos in
-        let b = ref 0 in
-        if len = 0 then [||]
-        else if len = 1 then list
+        len := Array.length(list) - pos;
+        b := 0;
+        if !len = 0 then [||]
+        else if !len = 1 then list
         else
           begin
-            let continue = ref true in
-            let i = ref 0 in
+            continue := true;
+            i := 0;
             while !continue do
-              if num>=(!i*fact(len-1)) && num < ((!i+1)*fact(len-1))
+              if num>=(!i*fact(!len-1)) && num < ((!i+1)*fact(!len-1))
               then begin
-                  swap list pos (!i+pos);
-                  b := !i*fact(len-1);
+                  for k = (!i + pos) downto pos + 1 do
+                    swap list k (k-1)
+                  done;
+                  b := !i*fact(!len-1);
                   continue := false
                 end
               else ();
@@ -102,6 +108,33 @@ let perm a m =
       in
       helper a 0 m
     end;;
+
+let perm1 arr m =
+  let len = Array.length arr in
+  let bin = ref 0 in
+  let rec make_perm a k l =
+    if l >= len - 1 then ()
+    else (
+      bin := k/(fact (len - l - 1)) + l;
+      for i = !bin downto l+1  do
+        swap a i (i - 1)
+      done;
+      make_perm a (k mod (fact (len - 1 - l))) (l + 1) )
+  in
+  make_perm arr m 0;
+  arr
+;;
+
+
+(* Test: *)
+perm1 [|1;2;3|] 0;;
+perm1 [|1;2;3|] 1;;
+perm1 [|1;2;3|] 2;;
+perm1 [|1;2;3|] 3;;
+perm1 [|1;2;3|] 4;;
+perm1 [|1;2;3|] 5;;
+perm1 [|1;2;3|] 6;;
+perm1 [|1;2;3|] 7;;
 
 (* Test: *)
 perm [|1|] 0;;
@@ -138,6 +171,12 @@ let perm_test func list =
   done;
   if !result then Printf.printf "No problem found!!\n" else Printf.printf "Problem found!\n"              
 ;;
+
+perm_test perm1 [|1;2|];;
+perm_test perm1 [|1;2;3|];;
+perm_test perm1 [|1;2;3;4|];;
+perm_test perm1 [|1;2;3;4;5|];;
+perm_test perm1 [|1;2;3;4;5;6|];;
 
 perm_test perm [|1;2|];;
 perm_test perm [|1;2;3|];;

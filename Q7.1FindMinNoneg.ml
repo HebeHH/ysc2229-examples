@@ -23,8 +23,7 @@ let smallest_missing_non_negative_integer arr =
   let len = Array.length arr in
 
   for i = 0 to len - 1 do
-    while ( i < len &&
-             arr.(i) < len &&
+    while (arr.(i) < len &&
                arr.(i) >= 0 &&
                  not (i = arr.(i)) &&
                    not (arr.(i) = arr.(arr.(i))) ) do
