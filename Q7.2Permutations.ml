@@ -109,32 +109,6 @@ let perm a m =
       helper a 0 m
     end;;
 
-let perm1 arr m =
-  let len = Array.length arr in
-  let bin = ref 0 in
-  let rec make_perm a k l =
-    if l >= len - 1 then ()
-    else (
-      bin := k/(fact (len - l - 1)) + l;
-      for i = !bin downto l+1  do
-        swap a i (i - 1)
-      done;
-      make_perm a (k mod (fact (len - 1 - l))) (l + 1) )
-  in
-  make_perm arr m 0;
-  arr
-;;
-
-
-(* Test: *)
-perm1 [|1;2;3|] 0;;
-perm1 [|1;2;3|] 1;;
-perm1 [|1;2;3|] 2;;
-perm1 [|1;2;3|] 3;;
-perm1 [|1;2;3|] 4;;
-perm1 [|1;2;3|] 5;;
-perm1 [|1;2;3|] 6;;
-perm1 [|1;2;3|] 7;;
 
 (* Test: *)
 perm [|1|] 0;;
@@ -171,12 +145,6 @@ let perm_test func list =
   done;
   if !result then Printf.printf "No problem found!!\n" else Printf.printf "Problem found!\n"              
 ;;
-
-perm_test perm1 [|1;2|];;
-perm_test perm1 [|1;2;3|];;
-perm_test perm1 [|1;2;3;4|];;
-perm_test perm1 [|1;2;3;4;5|];;
-perm_test perm1 [|1;2;3;4;5;6|];;
 
 perm_test perm [|1;2|];;
 perm_test perm [|1;2;3|];;
